@@ -1,19 +1,24 @@
 function setup() {
-  createCanvas(600, 400);
+  createCanvas(400, 400);
+  background(255);
   noStroke();
 }
 
 function draw() {
-  background(220);
+  background(255);
 
-  // Example shapes — replace these with your own design
-  fill(240);
-  ellipse(300, 250, 300, 120); // plate
+  // Face circle
+  fill(255, 230, 0);
+  ellipse(200, 200, 250, 250);
 
-  fill(200, 150, 80);
-  ellipse(300, 240, 220, 80); // food base
+  // Eyes
+  fill(0);
+  ellipse(160, 170, 35, 35);
+  ellipse(240, 170, 35, 35);
 
-  fill(0, 150, 0);
-  ellipse(250, 220, 20, 20); // garnish
-  ellipse(350, 220, 20, 20); // garnish
+  // Smile
+  noFill();
+  stroke(0);
+  strokeWeight(8);
+  arc(200, 220, 150, 120, 0, PI);
 }
