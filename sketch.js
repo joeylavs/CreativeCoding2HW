@@ -1,24 +1,52 @@
+let squares = [];
+
+function makeSquare() {
+  return {
+    x: random(width),
+    y: random(height),
+    size: random(20, 40),
+    dx: random(-2, 2),
+    dy: random(-2, 2)
+  };
+}
+
 function setup() {
-  createCanvas(400, 400);
-  background(255);
-  noStroke();
+  createCanvas(600, 400);
+
+  // start with a few squares
+  for (let i = 0; i < 5; i++) {
+    squares.push(makeSquare());
+  }
 }
 
 function draw() {
-  background(255);
+  background(220);
 
-  // Face circle
-  fill(255, 230, 0);
-  ellipse(200, 200, 250, 250);
+  // move + draw squares
+  for (let s of squares) {
+    s.x += s.dx;
+    s.y += s.dy;
 
-  // Eyes
+    // bounce off edges
+    if (s.x < 0 || s.x + s.size > width) s.dx *= -1;
+    if (s.y < 0 || s.y + s.size > height) s.dy *= -1;
+
+    fill(100, 150, 255);
+    rect(s.x, s.y, s.size, s.size);
+  }
+
+  // title + name
   fill(0);
-  ellipse(160, 170, 35, 35);
-  ellipse(240, 170, 35, 35);
+  textSize(20);
+  text("Moving Squares", 10, 30);
 
-  // Smile
-  noFill();
-  stroke(0);
-  strokeWeight(8);
-  arc(200, 220, 150, 120, 0, PI);
+  textSize(14);
+  textAlign(RIGHT, BOTTOM);
+  text("Joey", width - 10, height - 10);
+  textAlign(LEFT, BASELINE);
 }
+
+function mousePressed() {
+  squares.push(makeSquare());
+}
+
