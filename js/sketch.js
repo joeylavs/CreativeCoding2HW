@@ -5,9 +5,9 @@ let aiX = 100;
 let aiSpeed = 40;
 
 function preload() {
-  imgPhoto   = loadImage('images/food1.png');
-  imgDrawing = loadImage('images/food2.png');
-  imgAI      = loadImage('images/foodAI.png');
+  imgPhoto   = loadImage('images/pizza.jpg');
+  imgDrawing = loadImage('images/PizzaSteve.webp');
+  imgAI      = loadImage('images/AIpizza.png');
   titleFont  = loadFont('assets/titleFont.ttf');
 }
 
