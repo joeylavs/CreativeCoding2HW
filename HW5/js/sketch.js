@@ -43,7 +43,8 @@ function draw() {
   // DRAW ANIMATION
   
   image(frames[frameIndex], 400, 200, 120, 120);
-
+  
+// slow down animation counter++; if (counter % animationSpeed === 0) { frameIndex++; if (frameIndex >= frames.length) { frameIndex = 0; } }
   // Cycle animation frames
   frameIndex++;
   if (frameIndex >= frames.length) {
