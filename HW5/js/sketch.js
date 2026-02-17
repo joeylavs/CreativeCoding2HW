@@ -71,4 +71,3 @@ function drawPizza(x, y) {
 
   pop();
 }
-
