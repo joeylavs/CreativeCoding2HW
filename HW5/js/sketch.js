@@ -48,11 +48,7 @@ function draw() {
  let animationSpeed = 10;
 
   // Cycle animation frames
-  frameIndex++;
-  if (frameIndex >= frames.length) {
-    frameIndex = 0;
-  }
-}
+  
 
 
 // SIMPLE PIZZA DRAWING FUNCTION
