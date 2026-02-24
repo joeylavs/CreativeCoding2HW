@@ -1,35 +1,31 @@
+// -----------------------------
+// Animation variables
+// -----------------------------
 let danceFrames = [];
 let frameIndex = 0;
 let frameTimer = 0;
 let frameDelay = 8;
 
-let charX = 200;
-let charY = 200;
-
-let idleFrames = [];
-let walkFrames = [];
-let currentAnimation = "idle";
-
-let frameTimer = 0;
-let frameDelay = 8; // bigger = slower
-
+// Character position & speed
 let charX = 200;
 let charY = 200;
 let charSpeed = 2;
+
+// Food array
+let foods = [];
+
+// -----------------------------
+// PRELOAD — load dancing frames
+// -----------------------------
 function preload() {
   danceFrames.push(loadImage("images/dancing1.png"));
   danceFrames.push(loadImage("images/dancing2.png"));
   danceFrames.push(loadImage("images/dancing3.png"));
 }
 
-function preload() {
-danceFrames = [];
-danceFrames.push(loadImage("images/dancing1.png"));
-danceFrames.push(loadImage("images/dancing2.png"));
-danceFrames.push(loadImage("images/dancing3.png"));
-
-}
-let foods = [];
+// -----------------------------
+// SETUP — canvas + food objects
+// -----------------------------
 function setup() {
   createCanvas(600, 400);
 
@@ -39,6 +35,10 @@ function setup() {
   foods.push(new Food(400, 280, 70, color(255, 165, 0)));
   foods.push(new Food(500, 260, 55, color(255, 0, 255)));
 }
+
+// -----------------------------
+// DRAW — movement + animation
+// -----------------------------
 function draw() {
   background(50);
 
@@ -53,17 +53,18 @@ function draw() {
     moving = true;
   }
 
-  currentAnimation = moving ? "walk" : "idle";
-
   updateAnimation();
   drawCharacter();
 
-  // draw all food
+  // Draw all food
   for (let f of foods) {
     f.display();
   }
 }
 
+// -----------------------------
+// Update animation frame
+// -----------------------------
 function updateAnimation() {
   frameTimer++;
 
@@ -77,9 +78,11 @@ function updateAnimation() {
   }
 }
 
+// -----------------------------
+// Draw character
+// -----------------------------
 function drawCharacter() {
   let img = danceFrames[frameIndex];
   imageMode(CENTER);
   image(img, charX, charY);
 }
-
