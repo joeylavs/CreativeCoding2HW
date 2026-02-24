@@ -10,15 +10,15 @@ class Food {
     push();
     translate(this.x, this.y);
     noStroke();
-    fill(this.col);
 
-    // shape 1: main body (circle)
+    // Shape 1: main body (circle)
+    fill(this.col);
     ellipse(0, 0, this.size);
 
-    // shape 2: topping (rectangle)
+    // Shape 2: topping (rectangle)
     fill(255, 255, 0);
     rectMode(CENTER);
-    rect(0, -this.size * 0.2, this.size * 0.6, this.size * 0.2);
+    rect(0, -this.size * 0.2, this.size * 0.6, this.size * 0.25);
 
     pop();
   }
