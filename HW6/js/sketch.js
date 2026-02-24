@@ -27,3 +27,45 @@ function setup() {
   foods.push(new Food(400, 280, 70, color(255, 165, 0)));
   foods.push(new Food(500, 260, 55, color(255, 0, 255)));
 }
+function draw() {
+  background(50);
+
+  let moving = false;
+
+  if (keyIsDown(LEFT_ARROW)) {
+    charX -= charSpeed;
+    moving = true;
+  }
+  if (keyIsDown(RIGHT_ARROW)) {
+    charX += charSpeed;
+    moving = true;
+  }
+
+  currentAnimation = moving ? "walk" : "idle";
+
+  updateAnimation();
+  drawCharacter();
+
+  // draw all food
+  for (let f of foods) {
+    f.display();
+  }
+}
+function updateAnimation() {
+  frameTimer++;
+  if (frameTimer >= frameDelay) {
+    frameTimer = 0;
+    frameIndex++;
+    let frames = currentAnimation === "idle" ? idleFrames : walkFrames;
+    if (frameIndex >= frames.length) {
+      frameIndex = 0; // loop
+    }
+  }
+}
+
+function drawCharacter() {
+  let frames = currentAnimation === "idle" ? idleFrames : walkFrames;
+  let img = frames[frameIndex];
+  imageMode(CENTER);
+  image(img, charX, charY);
+}
