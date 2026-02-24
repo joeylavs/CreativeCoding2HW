@@ -9,7 +9,7 @@ let charY = 200;
 let idleFrames = [];
 let walkFrames = [];
 let currentAnimation = "idle";
-let frameIndex = 0;
+
 let frameTimer = 0;
 let frameDelay = 8; // bigger = slower
 
