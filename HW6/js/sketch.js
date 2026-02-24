@@ -1,3 +1,11 @@
+let danceFrames = [];
+let frameIndex = 0;
+let frameTimer = 0;
+let frameDelay = 8;
+
+let charX = 200;
+let charY = 200;
+
 let idleFrames = [];
 let walkFrames = [];
 let currentAnimation = "idle";
@@ -8,14 +16,18 @@ let frameDelay = 8; // bigger = slower
 let charX = 200;
 let charY = 200;
 let charSpeed = 2;
+function preload() {
+  danceFrames.push(loadImage("images/dancing1.png"));
+  danceFrames.push(loadImage("images/dancing2.png"));
+  danceFrames.push(loadImage("images/dancing3.png"));
+}
 
 function preload() {
-  for (let i = 0; i < 3; i++) {
-    idleFrames.push(loadImage(`images/idle_${i}.png`));
-  }
-  for (let i = 0; i < 4; i++) {
-    walkFrames.push(loadImage(`images/walk_${i}.png`));
-  }
+danceFrames = [];
+danceFrames.push(loadImage("images/dancing1.png"));
+danceFrames.push(loadImage("images/dancing2.png"));
+danceFrames.push(loadImage("images/dancing3.png"));
+
 }
 let foods = [];
 function setup() {
@@ -51,21 +63,23 @@ function draw() {
     f.display();
   }
 }
+
 function updateAnimation() {
   frameTimer++;
+
   if (frameTimer >= frameDelay) {
     frameTimer = 0;
     frameIndex++;
-    let frames = currentAnimation === "idle" ? idleFrames : walkFrames;
-    if (frameIndex >= frames.length) {
+
+    if (frameIndex >= danceFrames.length) {
       frameIndex = 0; // loop
     }
   }
 }
 
 function drawCharacter() {
-  let frames = currentAnimation === "idle" ? idleFrames : walkFrames;
-  let img = frames[frameIndex];
+  let img = danceFrames[frameIndex];
   imageMode(CENTER);
   image(img, charX, charY);
 }
+
