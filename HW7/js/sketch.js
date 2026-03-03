@@ -16,9 +16,9 @@ let foodImg;
 let isMoving = false;
 
 function preload() {
-  idleImg = loadImage('images/player_idle.png');
-  moveImg = loadImage('images/player_move.png');
-  foodImg = loadImage('images/food.png');
+  idleImg = loadImage('images/idle.png');
+  moveImg = loadImage('images/walking.png');
+  foodImg = loadImage('images/pizza.png');
 }
 
 function setup() {
