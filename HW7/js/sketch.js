@@ -3,38 +3,75 @@ let playerX, playerY;
 let playerSpeed = 4;
 
 let foodX, foodY;
+let isGoodFood = true;
 
 let score = 0;
+let health = 3;
 let gameTime = 60;   // seconds
 let startTime;
 let gameOver = false;
 
+// Images
 let idleImg;
 let moveImg;
-let foodImg;
+let goodFoodImg;
+let badFoodImg;
+
+// Sounds
+let bgMusic;
+let goodSound;
+let badSound;
 
 let isMoving = false;
 
+// ----- PRELOAD -----
 function preload() {
   idleImg = loadImage('images/idle.png');
   moveImg = loadImage('images/walking.png');
-  foodImg = loadImage('images/pizza.png');
+
+  goodFoodImg = loadImage('images/pizza.png');
+  badFoodImg = loadImage('images/broccoli.png');
+
+  bgMusic = loadSound('sounds/background.mp3');
+  goodSound = loadSound('sounds/good.wav');
+  badSound = loadSound('sounds/bad.wav');
 }
 
+// ----- SETUP -----
 function setup() {
-  createCanvas(800, 600);
+  let cnv = createCanvas(800, 600);
+
+  // allow keyboard input on GitHub Pages
+  cnv.elt.tabIndex = 0;
+  cnv.elt.focus();
 
   playerX = width / 2;
   playerY = height / 2;
 
   moveFoodRandom();
+  randomizeFoodType();
 
   startTime = millis();
 }
+
+// ----- START MUSIC ON CLICK -----
+function mousePressed() {
+  if (!bgMusic.isPlaying()) {
+    bgMusic.loop();
+  }
+}
+
+// ----- RANDOM FOOD -----
 function moveFoodRandom() {
   foodX = random(50, width - 50);
   foodY = random(50, height - 50);
 }
+
+function randomizeFoodType() {
+  isGoodFood = random() < 0.5; // 50/50 chance
+}
+
+// ----- DRAW LOOP -----
 function draw() {
   background(50);
 
@@ -61,7 +98,8 @@ function draw() {
   textSize(24);
   textAlign(LEFT, TOP);
   text('Score: ' + score, 20, 20);
-  text('Time: ' + nf(remaining.toFixed(1), 2, 1), 20, 50);
+  text('Health: ' + health, 20, 50);
+  text('Time: ' + nf(remaining.toFixed(1), 2, 1), 20, 80);
 
   if (gameOver) {
     textAlign(CENTER, CENTER);
@@ -69,6 +107,8 @@ function draw() {
     text('GAME OVER', width / 2, height / 2);
   }
 }
+
+// ----- MOVEMENT -----
 function handleMovement() {
   let movingNow = false;
 
@@ -95,6 +135,8 @@ function handleMovement() {
 
   isMoving = movingNow;
 }
+
+// ----- DRAW PLAYER -----
 function drawPlayer() {
   imageMode(CENTER);
   if (isMoving) {
@@ -103,17 +145,32 @@ function drawPlayer() {
     image(idleImg, playerX, playerY, 80, 80);
   }
 }
+
+// ----- DRAW FOOD -----
 function drawFood() {
   imageMode(CENTER);
-  image(foodImg, foodX, foodY, 64, 64);
+  if (isGoodFood) {
+    image(goodFoodImg, foodX, foodY, 64, 64);
+  } else {
+    image(badFoodImg, foodX, foodY, 64, 64);
+  }
 }
 
+// ----- COLLISION -----
 function checkCollision() {
   let d = dist(playerX, playerY, foodX, foodY);
-  let collisionRadius = 40; // tweak for your art
 
-  if (d < collisionRadius) {
-    score++;
+  if (d < 40) {
+    if (isGoodFood) {
+      score++;
+      goodSound.play();
+    } else {
+      health--;
+      badSound.play();
+      if (health <= 0) gameOver = true;
+    }
+
     moveFoodRandom();
+    randomizeFoodType();
   }
 }
