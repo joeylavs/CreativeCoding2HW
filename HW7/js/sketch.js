@@ -36,6 +36,12 @@ function preload() {
   goodSound = loadSound('sounds/good.wav');
   badSound = loadSound('sounds/bad.wav');
 }
+function mousePressed() {
+  cnv.elt.focus();   // <-- add this
+  if (!bgMusic.isPlaying()) {
+    bgMusic.loop();
+  }
+}
 
 // ----- SETUP -----
 function setup() {
