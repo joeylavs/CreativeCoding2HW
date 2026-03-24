@@ -158,6 +158,8 @@ function drawFood() {
     image(badFoodImg, foodX, foodY, 64, 64);
   }
 }
+cnv.elt.tabIndex = 0;
+cnv.elt.focus();
 
 // ----- COLLISION -----
 function checkCollision() {
