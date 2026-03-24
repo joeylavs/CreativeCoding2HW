@@ -1,4 +1,6 @@
 // ----- GLOBAL STATE -----
+let cnv;
+
 let playerX, playerY;
 let playerSpeed = 4;
 
@@ -36,16 +38,10 @@ function preload() {
   goodSound = loadSound('sounds/good.wav');
   badSound = loadSound('sounds/bad.wav');
 }
-function mousePressed() {
-  cnv.elt.focus();   // <-- add this
-  if (!bgMusic.isPlaying()) {
-    bgMusic.loop();
-  }
-}
 
 // ----- SETUP -----
 function setup() {
-  let cnv = createCanvas(800, 600);
+  cnv = createCanvas(800, 600);
 
   // allow keyboard input on GitHub Pages
   cnv.elt.tabIndex = 0;
@@ -60,11 +56,17 @@ function setup() {
   startTime = millis();
 }
 
-// ----- START MUSIC ON CLICK -----
+// ----- START MUSIC + FOCUS ON CLICK -----
 function mousePressed() {
+  cnv.elt.focus();   // <-- FIX: ensures movement always works
   if (!bgMusic.isPlaying()) {
     bgMusic.loop();
   }
+}
+
+// ----- KEEP FOCUS ON KEY PRESS -----
+function keyPressed() {
+  cnv.elt.focus();
 }
 
 // ----- RANDOM FOOD -----
@@ -106,7 +108,7 @@ function draw() {
   text('Score: ' + score, 20, 20);
   text('Health: ' + health, 20, 50);
 
-  // ----- FIXED TIMER LINE -----
+  // SAFE TIMER (never crashes)
   let safeTime = isNaN(remaining) ? 0 : remaining;
   text('Time: ' + safeTime.toFixed(1), 20, 80);
 
@@ -164,8 +166,6 @@ function drawFood() {
     image(badFoodImg, foodX, foodY, 64, 64);
   }
 }
-cnv.elt.tabIndex = 0;
-cnv.elt.focus();
 
 // ----- COLLISION -----
 function checkCollision() {
