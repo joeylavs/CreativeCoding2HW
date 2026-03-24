@@ -99,7 +99,10 @@ function draw() {
   textAlign(LEFT, TOP);
   text('Score: ' + score, 20, 20);
   text('Health: ' + health, 20, 50);
-  text('Time: ' + nf(remaining.toFixed(1), 2, 1), 20, 80);
+
+  // ----- FIXED TIMER LINE -----
+  let safeTime = isNaN(remaining) ? 0 : remaining;
+  text('Time: ' + safeTime.toFixed(1), 20, 80);
 
   if (gameOver) {
     textAlign(CENTER, CENTER);
@@ -174,3 +177,4 @@ function checkCollision() {
     randomizeFoodType();
   }
 }
+
