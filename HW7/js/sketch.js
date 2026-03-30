@@ -22,9 +22,8 @@ let score = 0;
 let health = 3;
 let gameState = "play"; // "play", "win", "lose"
 
-// Optional timer
-let gameTime = 60;
-let startTime;
+// Particle system
+let particles = [];
 
 // ----- PRELOAD -----
 function preload() {
@@ -69,11 +68,9 @@ function setup() {
   goodItems = new Group();
   for (let i = 0; i < 5; i++) spawnGoodItem();
 
-  // Bad items
+  // Bad items (enemies)
   badItems = new Group();
   for (let i = 0; i < 3; i++) spawnBadItem();
-
-  startTime = millis();
 }
 
 // ----- START MUSIC -----
@@ -94,7 +91,7 @@ function spawnGoodItem() {
     32,
     32
   );
-  g.addImage(goodFoodImg);   // FIXED
+  g.addImage(goodFoodImg);
   g.scale = 0.8;
 }
 
@@ -105,20 +102,15 @@ function spawnBadItem() {
     32,
     32
   );
-  b.addImage(badFoodImg);    // FIXED
+  b.addImage(badFoodImg);
   b.scale = 0.8;
+
+  b.health = 3; // enemy health
 }
 
 // ----- DRAW LOOP -----
 function draw() {
   background(50);
-
-  let elapsed = (millis() - startTime) / 1000;
-  let remaining = max(0, gameTime - elapsed);
-
-  if (remaining <= 0 && gameState === "play") {
-    gameState = "lose";
-  }
 
   if (gameState === "play") {
     handleMovement();
@@ -128,7 +120,8 @@ function draw() {
     player.vel.y = 0;
   }
 
-  drawHUD(remaining);
+  updateParticles();
+  drawHUD();
   drawGameStateMessage();
 }
 
@@ -151,31 +144,87 @@ function handleMovement() {
 function handleCollisions() {
   player.collide(obstacles);
 
+  // Good food
   player.overlap(goodItems, (p, item) => {
     score++;
     if (goodSound) goodSound.play();
     item.remove();
     spawnGoodItem();
-    if (score >= 10) gameState = "win";
   });
 
-  player.overlap(badItems, (p, item) => {
-    health--;
-    if (badSound) badSound.play();
-    item.remove();
-    spawnBadItem();
-    if (health <= 0) gameState = "lose";
+  // Enemy attack
+  player.overlap(badItems, (p, enemy) => {
+    damageEnemy(enemy);
   });
 }
 
+// ----- ENEMY DAMAGE + PARTICLES -----
+function damageEnemy(enemy) {
+  enemy.health--;
+  if (badSound) badSound.play();
+
+  // spawn particles
+  for (let i = 0; i < 15; i++) {
+    particles.push(new Particle(enemy.x, enemy.y));
+  }
+
+  // remove enemy if dead
+  if (enemy.health <= 0) {
+    enemy.remove();
+  }
+
+  // WIN CONDITION
+  if (badItems.length === 0) {
+    gameState = "win";
+  }
+}
+
+// ----- PARTICLE SYSTEM -----
+class Particle {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = p5.Vector.random2D().mult(random(1, 3));
+    this.life = 30;
+    this.size = random(4, 8);
+    this.col = color(255, random(100, 200), 0);
+  }
+
+  update() {
+    this.pos.add(this.vel);
+    this.life--;
+  }
+
+  draw() {
+    noStroke();
+    fill(
+      red(this.col),
+      green(this.col),
+      blue(this.col),
+      map(this.life, 0, 30, 0, 255)
+    );
+    circle(this.pos.x, this.pos.y, this.size);
+  }
+
+  isDead() {
+    return this.life <= 0;
+  }
+}
+
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    particles[i].update();
+    particles[i].draw();
+    if (particles[i].isDead()) particles.splice(i, 1);
+  }
+}
+
 // ----- UI -----
-function drawHUD(remaining) {
+function drawHUD() {
   fill(255);
   textSize(20);
   textAlign(LEFT, TOP);
   text("Score: " + score, 20, 20);
   text("Health: " + health, 20, 45);
-  text("Time: " + remaining.toFixed(1), 20, 70);
 }
 
 function drawGameStateMessage() {
@@ -186,7 +235,7 @@ function drawGameStateMessage() {
 
   if (gameState === "win") {
     fill("lime");
-    text("YOU WIN! Score 10!", width / 2, height / 2);
+    text("YOU WIN!", width / 2, height / 2);
   } else {
     fill("red");
     text("GAME OVER!", width / 2, height / 2);
