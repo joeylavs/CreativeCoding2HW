@@ -11,7 +11,7 @@ function setup() {
   textG.textAlign(CENTER, CENTER);
   textG.textSize(28);
   textG.fill(255);
-  textG.text("3D Pizza Orbit\nby Joey", 200, 100);
+  textG.text("Pizza Planet\nby Joey", 200, 100);
 }
 
 function draw() {
