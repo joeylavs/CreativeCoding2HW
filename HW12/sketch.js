@@ -4,37 +4,34 @@ let textG;
 function setup() {
   createCanvas(800, 600, WEBGL);
 
-  // offscreen graphics for text texture
+  // Create text texture
   textG = createGraphics(400, 200);
   textG.pixelDensity(1);
   textG.background(10);
   textG.textAlign(CENTER, CENTER);
-  textG.textSize(28);
+  textG.textSize(40);
   textG.fill(255);
-  textG.text("Pizza Planet\nby Joey", 200, 100);
+  textG.text("Pizza Planet", 200, 100);
 }
 
 function draw() {
   background(15);
-
-  // basic camera-ish feel
   orbitControl();
 
-  // global light
   ambientLight(80);
   directionalLight(255, 255, 255, 0.5, -1, -0.5);
 
   angle += 0.01;
 
-  // --- central pizza (cylinder) ---
+  // --- central pizza ---
   push();
-  rotateX(HALF_PI);          // lay it flat
-  rotateZ(angle * 0.3);      // slow spin
-  ambientMaterial(230, 190, 120); // crust color
-  cylinder(120, 20, 32, 1);  // radius, height
+  rotateX(HALF_PI);
+  rotateZ(angle * 0.3);
+  ambientMaterial(230, 190, 120);
+  cylinder(120, 20, 32, 1);
   pop();
 
-  // --- cheese box chunks ---
+  // --- cheese chunk ---
   push();
   rotateY(angle * 0.7);
   translate(80, -20, 0);
@@ -42,14 +39,7 @@ function draw() {
   box(40, 10, 40);
   pop();
 
-  push();
-  rotateY(-angle * 0.5);
-  translate(-90, -15, 40);
-  ambientMaterial(255, 230, 120);
-  box(30, 10, 30);
-  pop();
-
-  // --- pepperoni cylinders ---
+  // --- pepperoni ---
   push();
   rotateY(angle * 1.2);
   translate(60, -10, -60);
@@ -57,22 +47,15 @@ function draw() {
   cylinder(20, 8, 24, 1);
   pop();
 
-  push();
-  rotateY(angle * 0.9);
-  translate(-40, -10, -80);
-  ambientMaterial(180, 40, 40);
-  cylinder(18, 8, 24, 1);
-  pop();
-
-  // --- olive torus ---
+  // --- olive ---
   push();
   rotateY(angle * 1.5);
   translate(0, -5, 100);
-  normalMaterial(); // fun rainbow shading
+  normalMaterial();
   torus(18, 6, 24, 16);
   pop();
 
-  // --- background planet sphere ---
+  // --- background sphere ---
   push();
   translate(-200, -150, -300);
   rotateY(angle * 0.4);
@@ -80,7 +63,7 @@ function draw() {
   sphere(70, 32, 32);
   pop();
 
-  // --- rotating text sign ---
+  // --- rotating Pizza Planet sign ---
   push();
   translate(0, -200, 0);
   rotateY(angle * 0.6);
