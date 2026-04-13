@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>3D Ambulance – Joey</title>
+
+    <!-- p5.js core -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <!-- p5.sound (optional, safe to leave) -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/addons/p5.sound.min.js"></script>
+
+    
+    <script src="sketch.js" defer></script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        color: #fff;
+        font-family: system-ui, sans-serif;
+        overflow: hidden;
+      }
+      #info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 10;
+        font-size: 14px;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="info">
+      <strong>3D Ambulance Orbit</strong><br />
+      By Joey — click to move objects
+    </div>
+  </body>
+</html>
 
