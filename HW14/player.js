@@ -1,1 +1,26 @@
+class Player {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.speed = 3;
+    this.health = 3;
+    this.score = 0;
+    this.size = 30;
+  }
+
+  update() {
+    if (keyIsDown(87)) this.y -= this.speed; // W
+    if (keyIsDown(83)) this.y += this.speed; // S
+    if (keyIsDown(65)) this.x -= this.speed; // A
+    if (keyIsDown(68)) this.x += this.speed; // D
+
+    this.x = constrain(this.x, 0, width);
+    this.y = constrain(this.y, 0, height);
+  }
+
+  display() {
+    fill(200, 200, 50);
+    ellipse(this.x, this.y, this.size);
+  }
+}
 
