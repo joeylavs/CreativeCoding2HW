@@ -8,12 +8,11 @@ let gemImg;
 let bgImg;
 
 function preload() {
-  // Optional: load images here
-  // thiefImg = loadImage("assets/images/thief.png");
-  // guardImg = loadImage("assets/images/guard.png");
-  // gemImg = loadImage("assets/images/gem.png");
-  // bgImg = loadImage("assets/images/dungeon_bg.png");
+  thiefImg = loadImage("assets/images/thief.png");
+  guardImg = loadImage("assets/images/guard.png");
+  gemImg = loadImage("assets/images/gem.png");
 }
+
 
 function setup() {
   createCanvas(800, 600);
