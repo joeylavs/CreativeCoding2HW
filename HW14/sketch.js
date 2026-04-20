@@ -2,6 +2,10 @@ let player;
 let obstacles = [];
 let collectibles = [];
 let gameManager;
+let thiefImg;
+let guardImg;
+let gemImg;
+let bgImg;
 
 function preload() {
   // Optional: load images here
