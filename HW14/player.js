@@ -18,9 +18,10 @@ class Player {
     this.y = constrain(this.y, 0, height);
   }
 
-  display() {
-    fill(200, 200, 50);
-    ellipse(this.x, this.y, this.size);
-  }
+display() {
+  imageMode(CENTER);
+  image(thiefImg, this.x, this.y, this.size, this.size);
+}
+
 }
 
