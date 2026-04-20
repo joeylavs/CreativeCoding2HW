@@ -16,6 +16,9 @@ function preload() {
 
 function setup() {
   createCanvas(800, 600);
+console.log("thiefImg:", thiefImg);
+console.log("guardImg:", guardImg);
+console.log("gemImg:", gemImg);
 
   gameManager = new GameManager();
 
