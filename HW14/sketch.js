@@ -43,8 +43,33 @@ mazeWalls.push(new MazeWall(500, 100, 20, 220));
 
   // Create 5 collectibles
   for (let i = 0; i < 5; i++) {
-    collectibles.push(new Collectible(random(50, 750), random(50, 550)));
+    collectibles.push(spawnGem());
   }
+}
+function spawnGem() {
+  let x, y;
+  let valid = false;
+
+  while (!valid) {
+    x = random(50, width - 50);
+    y = random(50, height - 50);
+
+    valid = true;
+
+    for (let wall of mazeWalls) {
+      if (
+        x > wall.x &&
+        x < wall.x + wall.w &&
+        y > wall.y &&
+        y < wall.y + wall.h
+      ) {
+        valid = false;
+        break;
+      }
+    }
+  }
+
+  return new Collectible(x, y);
 }
 
 function draw() {
