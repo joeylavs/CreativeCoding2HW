@@ -2,6 +2,7 @@ let player;
 let obstacles = [];
 let collectibles = [];
 let gameManager;
+let mazeWalls = [];
 let thiefImg;
 let guardImg;
 let gemImg;
@@ -19,6 +20,17 @@ function setup() {
 console.log("thiefImg:", thiefImg);
 console.log("guardImg:", guardImg);
 console.log("gemImg:", gemImg);
+// Maze layout
+mazeWalls.push(new MazeWall(50, 50, 700, 20));   // top wall
+mazeWalls.push(new MazeWall(50, 530, 700, 20));  // bottom wall
+mazeWalls.push(new MazeWall(50, 50, 20, 500));   // left wall
+mazeWalls.push(new MazeWall(730, 50, 20, 500));  // right wall
+
+// inner maze walls
+mazeWalls.push(new MazeWall(150, 150, 400, 20));
+mazeWalls.push(new MazeWall(150, 150, 20, 300));
+mazeWalls.push(new MazeWall(300, 300, 300, 20));
+mazeWalls.push(new MazeWall(500, 100, 20, 220));
 
   gameManager = new GameManager();
 
@@ -37,6 +49,14 @@ console.log("gemImg:", gemImg);
 
 function draw() {
   background(40); // dungeon vibe
+for (let wall of mazeWalls) {
+  wall.display();
+
+  if (wall.hits(player)) {
+    player.x = player.prevX;
+    player.y = player.prevY;
+  }
+}
 
   gameManager.update();
   gameManager.display();
