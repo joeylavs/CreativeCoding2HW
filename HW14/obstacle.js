@@ -47,10 +47,10 @@ class Obstacle {
   }
 
   display() {
-    fill(200, 50, 50);
-    rectMode(CENTER);
-    rect(this.x, this.y, this.size, this.size);
-  }
+  imageMode(CENTER);
+  image(guardImg, this.x, this.y, this.size, this.size);
+}
+
 
   hits(player) {
     return dist(this.x, this.y, player.x, player.y) < (this.size + player.size) / 2;
