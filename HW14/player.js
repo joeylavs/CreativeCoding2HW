@@ -9,6 +9,8 @@ class Player {
   }
 
   update() {
+this.prevX = this.x;
+this.prevY = this.y;
     if (keyIsDown(87)) this.y -= this.speed; // W
     if (keyIsDown(83)) this.y += this.speed; // S
     if (keyIsDown(65)) this.x -= this.speed; // A
