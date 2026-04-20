@@ -18,12 +18,34 @@ class Obstacle {
   }
 
   update(player) {
-    if (this.type === "chase") {
-      this.chase(player);
-    } else {
-      this.patrol();
+    this.prevX = this.x;
+  this.prevY = this.y;
+
+  this.x += this.vx;
+  this.y += this.vy;
+
+  // bounce off edges
+  if (this.x < 0 || this.x > width) this.vx *= -1;
+  if (this.y < 0 || this.y > height) this.vy *= -1;
+// IMPORTANT: collision with maze walls happens BEFORE chase/patrol
+  for (let wall of mazeWalls) {
+    if (wall.hits(this)) {
+      this.x = this.prevX;
+      this.y = this.prevY;
+
+      // bounce off wall
+      this.vx *= -1;
+      this.vy *= -1;
     }
   }
+
+  // Now apply behavior
+  if (this.type === "chase") {
+    this.chase(player);
+  } else {
+    this.patrol();
+  }
+}
 
   chase(player) {
     let dir = createVector(player.x - this.x, player.y - this.y);
