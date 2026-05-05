@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wendigo Run</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #game-container {
+      border: 2px solid #fff;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+
+  <!-- p5.js -->
+  <script src="libs/p5.min.js"></script>
+
+  <!-- <script src="libs/p5.sound.min.js"></script> -->
+
+  
+  <script src="js/sketch.js"></script>
+
+  <script>
+    
+    const originalCreateCanvas = window.createCanvas;
+    window.createCanvas = function(w, h) {
+      const c = originalCreateCanvas(w, h);
+      c.parent('game-container');
+      return c;
+    };
+  </script>
+</body>
+</html>
 
