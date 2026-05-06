@@ -1,12 +1,14 @@
-// -------------------------------
+// 
 // ASSETS
-// -------------------------------
+// 
 let playerImg, wendigoImg, treeImg, rockImg;
-let hitSound, roarSound, windSound;
 
-// -------------------------------
+// SOUND FILES
+let biteSound, breathingSound, footstepsSound, roarSound;
+
+// 
 // GAME VARIABLES
-// -------------------------------
+// 
 let player;
 let obstacles = [];
 let wendigo;
@@ -17,9 +19,9 @@ let baseSpeed = 3;
 let obstacleTimer = 0;
 let wendigoTimer = 0;
 
-// -------------------------------
+// 
 // LOAD ASSETS
-// -------------------------------
+// 
 function preload() {
   // IMAGES
   playerImg = loadImage("assets/player/player.png");
@@ -27,23 +29,24 @@ function preload() {
   treeImg = loadImage("assets/images/tree.png");
   rockImg = loadImage("assets/images/rock.png");
 
-  // SOUNDS (optional)
-  // hitSound = loadSound("assets/sound/hit.wav");
-  // roarSound = loadSound("assets/sound/roar.wav");
-  // windSound = loadSound("assets/sound/wind.mp3");
+  // SOUNDS
+  biteSound = loadSound("assets/sound/Bite.wav");
+  breathingSound = loadSound("assets/sound/Breathing_fast.wav");
+  footstepsSound = loadSound("assets/sound/Footsteps_ running.wav");
+  roarSound = loadSound("assets/sound/Monster_Roar_2.wav");
 }
 
-// -------------------------------
+// 
 // SETUP
-// -------------------------------
+// 
 function setup() {
   createCanvas(800, 600);
   resetGame();
 }
 
-// -------------------------------
+// 
 // RESET GAME
-// -------------------------------
+// 
 function resetGame() {
   player = {
     x: width / 2,
@@ -68,12 +71,16 @@ function resetGame() {
   obstacleTimer = 0;
   wendigoTimer = 0;
 
+  // Stop looping sounds
+  if (footstepsSound) footstepsSound.stop();
+  if (breathingSound) breathingSound.stop();
+
   gameState = "start";
 }
 
-// -------------------------------
+// 
 // MAIN DRAW LOOP
-// -------------------------------
+// 
 function draw() {
   background(10, 20, 40);
 
@@ -91,9 +98,9 @@ function draw() {
   }
 }
 
-// -------------------------------
+// 
 // INPUT
-// -------------------------------
+// 
 function keyPressed() {
   if (gameState === "start" && key === " ") {
     gameState = "play";
@@ -102,18 +109,20 @@ function keyPressed() {
   }
 }
 
-// -------------------------------
+// 
 // GAME UPDATE
-// -------------------------------
+// 
 function updateGame() {
   score++;
   baseSpeed += 0.0008;
   obstacleTimer++;
   wendigoTimer++;
 
+  // WENDIGO APPEARS
   if (!wendigo.active && wendigoTimer > 600) {
     wendigo.active = true;
-    // if (roarSound) roarSound.play();
+    roarSound.setVolume(0.6);
+    roarSound.play();
   }
 
   handleInput();
@@ -124,9 +133,9 @@ function updateGame() {
   checkCollisions();
 }
 
-// -------------------------------
-// PLAYER MOVEMENT
-// -------------------------------
+// 
+// PLAYER MOVEMENT + FOOTSTEPS
+//
 function handleInput() {
   let targetVx = 0;
 
@@ -134,6 +143,16 @@ function handleInput() {
   if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) targetVx = 5;
 
   player.vx = lerp(player.vx, targetVx, 0.2);
+
+  // FOOTSTEPS SOUND
+  if (abs(player.vx) > 0.5) {
+    if (!footstepsSound.isPlaying()) {
+      footstepsSound.setVolume(0.4);
+      footstepsSound.loop();
+    }
+  } else {
+    footstepsSound.stop();
+  }
 }
 
 function updatePlayer() {
@@ -141,9 +160,9 @@ function updatePlayer() {
   player.x = constrain(player.x, player.w / 2, width - player.w / 2);
 }
 
-// -------------------------------
+// 
 // OBSTACLES
-// -------------------------------
+//
 function spawnObstacles() {
   if (obstacleTimer > 30) {
     obstacleTimer = 0;
@@ -168,9 +187,9 @@ function updateObstacles() {
   obstacles = obstacles.filter(o => o.y < height + 100);
 }
 
-// -------------------------------
-// WENDIGO
-// -------------------------------
+// 
+// WENDIGO + BREATHING SOUND
+// 
 function updateWendigo() {
   if (!wendigo.active) return;
 
@@ -182,18 +201,30 @@ function updateWendigo() {
   if (wendigo.y < player.y - 200) {
     wendigo.y += 0.5;
   }
+
+  // BREATHING WHEN CLOSE
+  let distToPlayer = dist(player.x, player.y, wendigo.x, wendigo.y);
+
+  if (distToPlayer < 200) {
+    if (!breathingSound.isPlaying()) {
+      breathingSound.setVolume(0.5);
+      breathingSound.loop();
+    }
+  } else {
+    breathingSound.stop();
+  }
 }
 
-// -------------------------------
+// 
 // COLLISIONS
-// -------------------------------
+// 
 function checkCollisions() {
+  // OBSTACLES
   for (let o of obstacles) {
     let d = dist(player.x, player.y, o.x, o.y);
 
     if (d < o.size / 2 + player.w / 2) {
       player.health--;
-      // if (hitSound) hitSound.play();
 
       o.y = height + 200;
       wendigo.y += 20;
@@ -205,30 +236,38 @@ function checkCollisions() {
     }
   }
 
+  // WENDIGO CATCHES PLAYER
   if (wendigo.active) {
     let dW = dist(player.x, player.y, wendigo.x, wendigo.y);
     if (dW < 60) {
+      biteSound.setVolume(0.7);
+      biteSound.play();
       endGame(false);
       return;
     }
   }
 
+  // WIN CONDITION
   if (score > 3000) {
     endGame(true);
   }
 }
 
-// -------------------------------
+// 
 // END GAME
-// -------------------------------
+// 
 function endGame(won) {
   if (score > highScore) highScore = score;
+
+  footstepsSound.stop();
+  breathingSound.stop();
+
   gameState = won ? "win" : "gameover";
 }
 
-// -------------------------------
+// 
 // DRAWING
-// -------------------------------
+// 
 function drawGame() {
   drawBackgroundTrees();
   drawObstacles();
@@ -272,9 +311,9 @@ function drawUI() {
   text("Health: " + player.health, 10, 50);
 }
 
-// -------------------------------
+// 
 // SCREENS
-// -------------------------------
+// 
 function drawStartScreen() {
   fill(255);
   textAlign(CENTER, CENTER);
@@ -310,4 +349,3 @@ function drawWin() {
   text("Score: " + score, width / 2, height / 2 + 10);
   text("Press SPACE to restart", width / 2, height / 2 + 40);
 }
-
