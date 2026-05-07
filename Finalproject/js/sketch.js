@@ -23,13 +23,13 @@ let wendigoTimer = 0;
 // LOAD ASSETS
 // -------------------------------
 function preload() {
-  // IMAGES
   playerImg = loadImage("assets/player/player.png");
-  wendigoImg = loadImage("assets/enemy/wendigo.png");
   treeImg = loadImage("assets/images/tree.png");
   rockImg = loadImage("assets/images/rock.png");
 
-  // SOUNDS
+  // You haven't added the Wendigo image yet, so skip it for now
+  // wendigoImg = loadImage("assets/enemy/wendigo.png");
+
   biteSound = loadSound("assets/sound/Bite.wav");
   breathingSound = loadSound("assets/sound/Breathing_fast.wav");
   footstepsSound = loadSound("assets/sound/Footsteps_ running.wav");
@@ -43,17 +43,17 @@ function setup() {
   createCanvas(800, 600);
 
   // PLAYER SPRITE
-  player = new Sprite(width / 2, height - 120, 50, 60);
+  player = new Sprite(width / 2, height / 2 + 50, 50, 60);
   player.img = playerImg;
   player.collider = 'none';
   player.rotationLock = true;
 
   resetGame();
 
-  // FORCE WENDIGO TO APPEAR IMMEDIATELY
+  // FORCE WENDIGO TO APPEAR IN CENTER
   wendigo.active = true;
   wendigo.x = width / 2;
-  wendigo.y = 200;
+  wendigo.y = height / 2 - 100;
 }
 
 // -------------------------------
@@ -62,14 +62,14 @@ function setup() {
 function resetGame() {
   // Reset player
   player.x = width / 2;
-  player.y = height - 120;
+  player.y = height / 2 + 50;
   player.vel.x = 0;
   player.health = 3;
 
   // Reset obstacles
   obstacles = [];
 
-  // Reset Wendigo 
+  //  FIXED WENDIGO OBJECT
   wendigo = {
     x: width / 2,
     y: -300,
@@ -128,7 +128,7 @@ function updateGame() {
   obstacleTimer++;
   wendigoTimer++;
 
-  // WENDIGO APPEARS (normal logic)
+  // Normal Wendigo activation
   if (!wendigo.active && wendigoTimer > 600) {
     wendigo.active = true;
     roarSound.setVolume(0.6);
@@ -154,7 +154,6 @@ function handleInput() {
 
   player.vel.x = lerp(player.vel.x, targetVx, 0.2);
 
-  // FOOTSTEPS SOUND
   if (abs(player.vel.x) > 0.5) {
     if (!footstepsSound.isPlaying()) {
       footstepsSound.setVolume(0.4);
@@ -207,7 +206,6 @@ function updateWendigo() {
   let dx = player.x - wendigo.x;
   wendigo.x += dx * 0.02;
 
-  // BREATHING WHEN CLOSE
   let distToPlayer = dist(player.x, player.y, wendigo.x, wendigo.y);
 
   if (distToPlayer < 200) {
@@ -224,7 +222,6 @@ function updateWendigo() {
 // COLLISIONS
 // -------------------------------
 function checkCollisions() {
-  // OBSTACLES
   for (let o of obstacles) {
     let d = dist(player.x, player.y, o.x, o.y);
 
@@ -241,7 +238,6 @@ function checkCollisions() {
     }
   }
 
-  // WENDIGO CATCHES PLAYER
   if (wendigo.active) {
     let dW = dist(player.x, player.y, wendigo.x, wendigo.y);
     if (dW < 60) {
@@ -252,7 +248,6 @@ function checkCollisions() {
     }
   }
 
-  // WIN CONDITION
   if (score > 3000) {
     endGame(true);
   }
@@ -279,7 +274,7 @@ function drawGame() {
 
   player.draw();   // p5.play sprite
 
-  drawWendigo();   // ⭐ MUST be after player or it gets hidden
+  drawWendigo();   // ⭐ MUST be after player
 
   drawUI();
 }
@@ -302,11 +297,11 @@ function drawObstacles() {
   }
 }
 
-// TEMPORARY WENDIGO SHAPE
+//  TEMPORARY WENDIGO SHAPE
 function drawWendigo() {
   if (!wendigo.active) return;
 
-  fill(255, 0, 0); // bright red
+  fill(255, 0, 0);
   rect(wendigo.x - 40, wendigo.y - 60, 80, 120);
 }
 
