@@ -17,13 +17,13 @@ function setup() {
   player = new Sprite(width / 2, height / 2);
   player.collider = "none";
   player.img = playerImg;
-  player.scale = 0.15;   // <— FIX: small player
+  player.img.scale = 0.1;   // <— REAL FIX
 
   // WENDIGO — start BELOW the screen
   wendigo = new Sprite(width / 2, height + 80);
   wendigo.collider = "none";
   wendigo.img = wendigoImg;
-  wendigo.scale = 0.20;  // <— FIX: slightly bigger than player
+  wendigo.img.scale = 0.12; // <— REAL FIX
 
   // GROUPS
   treeGroup = new Group();
@@ -34,7 +34,7 @@ function setup() {
     let t = new Sprite(random(100, width - 100), random(-600, -50));
     t.collider = "none";
     t.img = treeImg;
-    t.scale = 0.25;     // <— FIX: small tree
+    t.img.scale = 0.15;   // <— REAL FIX
     treeGroup.add(t);
   }
 
@@ -43,7 +43,7 @@ function setup() {
     let r = new Sprite(random(100, width - 100), random(-600, -50));
     r.collider = "none";
     r.img = rockImg;
-    r.scale = 0.20;     // <— FIX: small rock
+    r.img.scale = 0.12;   // <— REAL FIX
     rockGroup.add(r);
   }
 }
