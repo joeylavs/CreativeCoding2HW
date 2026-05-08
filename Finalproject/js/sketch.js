@@ -13,25 +13,17 @@ function preload() {
 function setup() {
   createCanvas(800, 600);
 
-  console.log("Sprite test:", createSprite);
-
   // PLAYER — start in the middle
   player = new Sprite(width / 2, height / 2);
-  player.collider = "none";   // disable physics body BEFORE image
-  player.tile = false;        // disable tiling BEFORE image
-  player.scale = 1;           // reset scale BEFORE image
-  player.img = playerImg;     // load image AFTER disabling auto behaviors
-  player.w = 20;              // force final size
-  player.h = 20;
+  player.collider = "none";
+  player.img = playerImg;
+  player.scale = 0.15;   // <— FIX: small player
 
   // WENDIGO — start BELOW the screen
   wendigo = new Sprite(width / 2, height + 80);
   wendigo.collider = "none";
-  wendigo.tile = false;
-  wendigo.scale = 1;
   wendigo.img = wendigoImg;
-  wendigo.w = 28;
-  wendigo.h = 28;
+  wendigo.scale = 0.20;  // <— FIX: slightly bigger than player
 
   // GROUPS
   treeGroup = new Group();
@@ -41,11 +33,8 @@ function setup() {
   for (let i = 0; i < 6; i++) {
     let t = new Sprite(random(100, width - 100), random(-600, -50));
     t.collider = "none";
-    t.tile = false;
-    t.scale = 1;
     t.img = treeImg;
-    t.w = 40;
-    t.h = 60;
+    t.scale = 0.25;     // <— FIX: small tree
     treeGroup.add(t);
   }
 
@@ -53,11 +42,8 @@ function setup() {
   for (let i = 0; i < 6; i++) {
     let r = new Sprite(random(100, width - 100), random(-600, -50));
     r.collider = "none";
-    r.tile = false;
-    r.scale = 1;
     r.img = rockImg;
-    r.w = 30;
-    r.h = 20;
+    r.scale = 0.20;     // <— FIX: small rock
     rockGroup.add(r);
   }
 }
@@ -78,7 +64,6 @@ function draw() {
   for (let t of treeGroup) {
     t.y += scrollSpeed;
 
-    // Respawn above screen
     if (t.y > height + 50) {
       t.y = random(-600, -50);
       t.x = random(100, width - 100);
