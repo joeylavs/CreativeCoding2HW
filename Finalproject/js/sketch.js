@@ -17,32 +17,34 @@ function preload() {
   wendigoImg = loadImage("assets/enemy/wendigo1.png");
   treeImg = loadImage("assets/images/tree1.png");
   rockImg = loadImage("assets/images/rock1.png");
-  goalImg = loadImage("assets/images/tree1.png"); // placeholder goal image
 
-  // Sounds
-  biteSound = loadSound("assets/sound/Bite.wav");
-  breathingSound = loadSound("assets/sound/Breathing_fast.wav");
-  footstepsSound = loadSound("assets/sound/Footsteps_ running.wav");
-  roarSound = loadSound("assets/sound/Monster_Roar_2.wav");
+  // Goal image (placeholder)
+  goalImg = loadImage("assets/images/tree1.png");
+
+  // Sounds (correct folder!)
+  biteSound = loadSound("sounds/Bite.wav");
+  breathingSound = loadSound("sounds/Breathing_fast.wav");
+  footstepsSound = loadSound("sounds/Footsteps_ running.wav");
+  roarSound = loadSound("sounds/Monster_Roar_2.wav");
 }
 
 function setup() {
   createCanvas(800, 600);
 
-  // PLAYER — start in the middle
+  // PLAYER
   player = new Sprite(width / 2, height / 2);
   player.collider = "none";
   player.img = playerImg;
   player.img.scale = 0.1;
 
-  // WENDIGO — start BELOW the screen
+  // WENDIGO
   wendigo = new Sprite(width / 2, height + 80);
   wendigo.collider = "none";
   wendigo.img = wendigoImg;
   wendigo.img.scale = 0.12;
 
-  // GOAL — the end the player can reach
-  goal = new Sprite(width / 2, -2000); // far above
+  // END GOAL
+  goal = new Sprite(width / 2, -2000);
   goal.collider = "none";
   goal.img = goalImg;
   goal.img.scale = 0.3;
@@ -51,7 +53,7 @@ function setup() {
   treeGroup = new Group();
   rockGroup = new Group();
 
-  // TREES — spawn above screen (12 for difficulty)
+  // TREES
   for (let i = 0; i < 12; i++) {
     let t = new Sprite(random(100, width - 100), random(-800, -50));
     t.collider = "none";
@@ -60,7 +62,7 @@ function setup() {
     treeGroup.add(t);
   }
 
-  // ROCKS — spawn above screen (12 for difficulty)
+  // ROCKS
   for (let i = 0; i < 12; i++) {
     let r = new Sprite(random(100, width - 100), random(-800, -50));
     r.collider = "none";
@@ -71,9 +73,9 @@ function setup() {
 }
 
 function draw() {
-  background(255); // WHITE SNOW BACKGROUND
+  background(255);
 
-  // START SCREEN ----------------------------------------------------
+  // START SCREEN
   if (gameState === "start") {
     textAlign(CENTER, CENTER);
     textSize(40);
@@ -91,7 +93,7 @@ function draw() {
     return;
   }
 
-  // GAME OVER SCREEN ------------------------------------------------
+  // GAME OVER SCREEN
   if (gameState === "gameover") {
     breathingSound.stop();
     footstepsSound.stop();
@@ -108,7 +110,7 @@ function draw() {
     return;
   }
 
-  // WIN SCREEN ------------------------------------------------------
+  // WIN SCREEN
   if (gameState === "win") {
     breathingSound.stop();
     footstepsSound.stop();
@@ -125,7 +127,7 @@ function draw() {
     return;
   }
 
-  // GAMEPLAY --------------------------------------------------------
+  // GAMEPLAY
   if (gameState === "play") {
 
     // PLAYER MOVEMENT + FOOTSTEP SOUND
@@ -140,34 +142,32 @@ function draw() {
       footstepsSound.stop();
     }
 
-    // INCREASE DIFFICULTY OVER TIME
+    // DIFFICULTY RAMP
     scrollSpeed += 0.002;
     scrollSpeed = min(scrollSpeed, 12);
 
-    // MOVE TREES DOWN
+    // MOVE TREES
     for (let t of treeGroup) {
       t.y += scrollSpeed;
-
       if (t.y > height + 50) {
         t.y = random(-800, -200);
         t.x = random(100, width - 100);
       }
     }
 
-    // MOVE ROCKS DOWN
+    // MOVE ROCKS
     for (let r of rockGroup) {
       r.y += scrollSpeed;
-
       if (r.y > height + 50) {
         r.y = random(-800, -200);
         r.x = random(100, width - 100);
       }
     }
 
-    // MOVE GOAL DOWN
+    // MOVE GOAL
     goal.y += scrollSpeed;
 
-    // COLLISION WITH OBSTACLES → WENDIGO GETS CLOSER + FASTER
+    // COLLISION WITH OBSTACLES → WENDIGO MOVES CLOSER
     if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
       if (!biteSound.isPlaying()) biteSound.play();
       moveWendigoCloser();
@@ -177,7 +177,7 @@ function draw() {
     let dx = player.x - wendigo.x;
     wendigo.x += dx * 0.05;
 
-    // PREVENT WENDIGO FROM PASSING THE PLAYER
+    // WENDIGO NEVER PASSES PLAYER
     if (wendigo.y < player.y + 40) {
       wendigo.y = player.y + 40;
     }
@@ -185,14 +185,12 @@ function draw() {
     // DISTANCE CHECK FOR SOUNDS
     let d = dist(player.x, player.y, wendigo.x, wendigo.y);
 
-    // Breathing when close
     if (d < 200) {
       if (!breathingSound.isPlaying()) breathingSound.loop();
     } else {
       breathingSound.stop();
     }
 
-    // Roar when VERY close
     if (d < 80) {
       if (!roarSound.isPlaying()) roarSound.play();
     }
@@ -218,18 +216,14 @@ function moveWendigoCloser() {
 }
 
 function resetGame() {
-  // Reset player
   player.x = width / 2;
   player.y = height / 2;
 
-  // Reset Wendigo
   wendigo.x = width / 2;
   wendigo.y = height + 80;
 
-  // Reset goal
   goal.y = -2000;
 
-  // Reset obstacles
   for (let t of treeGroup) {
     t.y = random(-800, -200);
     t.x = random(100, width - 100);
@@ -239,11 +233,9 @@ function resetGame() {
     r.x = random(100, width - 100);
   }
 
-  // Reset speeds
   scrollSpeed = 3;
   wendigoSpeed = 0.5;
 
-  // Stop all sounds
   biteSound.stop();
   breathingSound.stop();
   footstepsSound.stop();
