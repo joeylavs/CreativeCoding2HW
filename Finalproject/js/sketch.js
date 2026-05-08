@@ -4,10 +4,10 @@ let playerImg, wendigoImg, treeImg, rockImg;
 
 function preload() {
   // Load all images
-  playerImg = loadImage('assets/player/player.png');
-  wendigoImg = loadImage('assets/enemy/wendigo.png');
-  treeImg = loadImage('assets/obstacles/tree.png');
-  rockImg = loadImage('assets/obstacles/rock.png');
+  playerImg = loadImage('assets/player/player1.png');
+  wendigoImg = loadImage('assets/enemy/wendigo1.png');
+  treeImg = loadImage('assets/images/tree1.png');
+  rockImg = loadImage('assets/images/rock1.png');
 }
 
 function setup() {
