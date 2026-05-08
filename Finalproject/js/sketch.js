@@ -11,6 +11,8 @@ function preload() {
 }
 
 function setup() {
+  console.log("Sprite test:", createSprite);
+
   createCanvas(800, 600);
 
   // Player setup
