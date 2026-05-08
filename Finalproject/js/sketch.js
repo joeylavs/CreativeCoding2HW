@@ -19,6 +19,7 @@ function setup() {
   player = new Sprite(width / 2, height / 2);
   player.img = playerImg;
   player.tile = false;
+  player.scale = 1;
   player.w = 20;
   player.h = 20;
   player.collider = "none";
@@ -27,6 +28,7 @@ function setup() {
   wendigo = new Sprite(width / 2, height + 80);
   wendigo.img = wendigoImg;
   wendigo.tile = false;
+  wendigo.scale = 1;
   wendigo.w = 28;
   wendigo.h = 28;
   wendigo.collider = "none";
@@ -40,6 +42,7 @@ function setup() {
     let t = new Sprite(random(100, width - 100), random(-600, -50));
     t.img = treeImg;
     t.tile = false;
+    t.scale = 1;
     t.w = 40;
     t.h = 60;
     t.collider = "none";
@@ -51,6 +54,7 @@ function setup() {
     let r = new Sprite(random(100, width - 100), random(-600, -50));
     r.img = rockImg;
     r.tile = false;
+    r.scale = 1;
     r.w = 30;
     r.h = 20;
     r.collider = "none";
