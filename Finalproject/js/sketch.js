@@ -39,7 +39,7 @@ function setup() {
     t.img = treeImg;
     t.w = 40;
     t.h = 60;
-    t.collider = "static";
+    t.collider = "none";
     treeGroup.add(t);
   }
 
@@ -49,7 +49,7 @@ function setup() {
     r.img = rockImg;
     r.w = 30;
     r.h = 20;
-    r.collider = "static";
+    r.collider = "none";
     rockGroup.add(r);
   }
 }
