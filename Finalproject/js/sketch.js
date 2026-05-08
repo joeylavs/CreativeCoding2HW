@@ -23,9 +23,9 @@ let wendigoTimer = 0;
 // LOAD ASSETS
 // -------------------------------
 function preload() {
-  playerImg = loadImage("assets/player/player.png");
-  treeImg = loadImage("assets/images/tree.png");
-  rockImg = loadImage("assets/images/rock.png");
+  playerImg = loadImage("assets/player/player1.png");
+  treeImg = loadImage("assets/images/tree1.png");
+  rockImg = loadImage("assets/images/rock1.png");
 
   // You haven't added the Wendigo image yet, so skip it for now
   // wendigoImg = loadImage("assets/enemy/wendigo.png");
