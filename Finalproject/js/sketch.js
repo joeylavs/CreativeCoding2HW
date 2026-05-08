@@ -8,8 +8,8 @@ let biteSound, breathingSound, footstepsSound, roarSound;
 
 let gameState = "start"; // "start", "play", "gameover"
 let scrollSpeed = 3;     // world scroll speed
-let wendigoSpeed = 0.5;  // vertical chase speed
-let wendigoBoost = 0.2;  // speed gained per collision
+let wendigoSpeed = 0.5;  // how much closer he moves per collision
+let wendigoBoost = 0.2;  // how much stronger each collision makes him
 
 function preload() {
   // Images
@@ -95,7 +95,6 @@ function draw() {
     textSize(24);
     text("Press R to Restart", width / 2, height / 2 + 40);
 
-    // Stop all sounds
     breathingSound.stop();
     footstepsSound.stop();
 
@@ -142,7 +141,7 @@ function draw() {
       }
     }
 
-    // COLLISION WITH OBSTACLES → WENDIGO GETS CLOSER + FASTER + SOUND
+    // COLLISION WITH OBSTACLES → WENDIGO GETS CLOSER + FASTER
     if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
       if (!biteSound.isPlaying()) biteSound.play();
       moveWendigoCloser();
@@ -151,9 +150,6 @@ function draw() {
     // WENDIGO FOLLOWS PLAYER LEFT/RIGHT
     let dx = player.x - wendigo.x;
     wendigo.x += dx * 0.05;
-
-    // WENDIGO MOVES UPWARD TOWARD PLAYER
-    wendigo.y -= wendigoSpeed;
 
     // PREVENT WENDIGO FROM PASSING THE PLAYER
     if (wendigo.y < player.y + 40) {
@@ -183,11 +179,11 @@ function draw() {
 }
 
 function moveWendigoCloser() {
-  // Boost vertical chase speed
-  wendigoSpeed += wendigoBoost;
-
-  // Pull Wendigo slightly upward
+  // Move Wendigo upward ONLY when player hits something
   wendigo.y -= 10;
+
+  // Increase how strong each future pull is
+  wendigoSpeed += wendigoBoost;
 }
 
 function resetGame() {
