@@ -3,8 +3,10 @@ let player, wendigo;
 let treeGroup, rockGroup;
 let playerImg, wendigoImg, treeImg, rockImg;
 
-let gameState = "start"; // "start", "play", "gameover"
-let scrollSpeed = 3;     // base speed
+let gameState = "start"; 
+let scrollSpeed = 3;     // world scroll speed
+let wendigoSpeed = 0.5;  // vertical chase speed
+let wendigoBoost = 0.2;  // speed gained per collision
 
 function preload() {
   playerImg = loadImage("assets/player/player1.png");
@@ -55,7 +57,7 @@ function draw() {
   // WHITE SNOW BACKGROUND
   background(255);
 
-  // START SCREEN ----------------------------------------------------
+  // START SCREEN 
   if (gameState === "start") {
     textAlign(CENTER, CENTER);
     textSize(40);
@@ -66,13 +68,14 @@ function draw() {
     text("Press SPACE to Start", width / 2, height / 2 + 20);
 
     if (kb.presses("space")) {
-      scrollSpeed = 3; // reset speed
+      scrollSpeed = 3;
+      wendigoSpeed = 0.5;
       gameState = "play";
     }
     return;
   }
 
-  // GAME OVER SCREEN ------------------------------------------------
+  // GAME OVER SCREEN 
   if (gameState === "gameover") {
     textAlign(CENTER, CENTER);
     textSize(50);
@@ -86,7 +89,7 @@ function draw() {
     return;
   }
 
-  // GAMEPLAY --------------------------------------------------------
+  // GAMEPLAY 
   if (gameState === "play") {
 
     // PLAYER MOVEMENT
@@ -119,12 +122,19 @@ function draw() {
       }
     }
 
-    // COLLISION WITH OBSTACLES → WENDIGO MOVES CLOSER
+    // COLLISION WITH OBSTACLES → WENDIGO GETS CLOSER + FASTER
     if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
       moveWendigoCloser();
     }
 
-    // COLLISION WITH WENDIGO → GAME OVER (distance check)
+    // WENDIGO FOLLOWS PLAYER LEFT/RIGHT
+    let dx = player.x - wendigo.x;
+    wendigo.x += dx * 0.05;
+
+    // WENDIGO MOVES UPWARD TOWARD PLAYER
+    wendigo.y -= wendigoSpeed;
+
+    // COLLISION WITH WENDIGO → GAME OVER
     let d = dist(player.x, player.y, wendigo.x, wendigo.y);
     if (d < 40) {
       gameState = "gameover";
@@ -133,12 +143,11 @@ function draw() {
 }
 
 function moveWendigoCloser() {
-  let dx = player.x - wendigo.x;
-  let dy = player.y - wendigo.y;
-  let step = 0.05;
+  // Boost vertical chase speed
+  wendigoSpeed += wendigoBoost;
 
-  wendigo.x += dx * step;
-  wendigo.y += dy * step;
+  // Pull Wendigo slightly upward
+  wendigo.y -= 10;
 }
 
 function resetGame() {
@@ -161,5 +170,7 @@ function resetGame() {
   }
 
   scrollSpeed = 3;
+  wendigoSpeed = 0.5;
+
   gameState = "start";
 }
