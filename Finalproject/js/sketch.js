@@ -7,53 +7,44 @@ let playerImg, wendigoImg, treeImg, rockImg, goalImg;
 let biteSound, breathingSound, footstepsSound, roarSound;
 
 let gameState = "start"; // "start", "play", "gameover", "win"
-let scrollSpeed = 3;     // world scroll speed
-let wendigoSpeed = 0.5;  // how much closer he moves per collision
-let wendigoBoost = 0.2;  // how much stronger each collision makes him
+let scrollSpeed = 3;
+let wendigoSpeed = 0.5;
+let wendigoBoost = 0.2;
 
 function preload() {
-  // Images
   playerImg = loadImage("assets/player/player1.png");
   wendigoImg = loadImage("assets/enemy/wendigo1.png");
   treeImg = loadImage("assets/images/tree1.png");
   rockImg = loadImage("assets/images/rock1.png");
-
-  // Goal image (placeholder)
   goalImg = loadImage("assets/images/tree1.png");
 
-  // Sounds (correct folder!)
   biteSound = loadSound("sounds/Bite.wav");
   breathingSound = loadSound("sounds/Breathing_fast.wav");
-  footstepsSound = loadSound("sounds/Footsteps_running.wav");
+  footstepsSound = loadSound("sounds/Footsteps_running.wav"); // FIXED
   roarSound = loadSound("sounds/Monster_Roar_2.wav");
 }
 
 function setup() {
   createCanvas(800, 600);
 
-  // PLAYER
   player = new Sprite(width / 2, height / 2);
   player.collider = "none";
   player.img = playerImg;
   player.img.scale = 0.1;
 
-  // WENDIGO
   wendigo = new Sprite(width / 2, height + 80);
   wendigo.collider = "none";
   wendigo.img = wendigoImg;
   wendigo.img.scale = 0.12;
 
-  // END GOAL
   goal = new Sprite(width / 2, -2000);
   goal.collider = "none";
   goal.img = goalImg;
   goal.img.scale = 0.3;
 
-  // GROUPS
   treeGroup = new Group();
   rockGroup = new Group();
 
-  // TREES
   for (let i = 0; i < 12; i++) {
     let t = new Sprite(random(100, width - 100), random(-800, -50));
     t.collider = "none";
@@ -62,7 +53,6 @@ function setup() {
     treeGroup.add(t);
   }
 
-  // ROCKS
   for (let i = 0; i < 12; i++) {
     let r = new Sprite(random(100, width - 100), random(-800, -50));
     r.collider = "none";
@@ -75,7 +65,6 @@ function setup() {
 function draw() {
   background(255);
 
-  // START SCREEN
   if (gameState === "start") {
     textAlign(CENTER, CENTER);
     textSize(40);
@@ -93,7 +82,6 @@ function draw() {
     return;
   }
 
-  // GAME OVER SCREEN
   if (gameState === "gameover") {
     breathingSound.stop();
     footstepsSound.stop();
@@ -110,7 +98,6 @@ function draw() {
     return;
   }
 
-  // WIN SCREEN
   if (gameState === "win") {
     breathingSound.stop();
     footstepsSound.stop();
@@ -127,10 +114,8 @@ function draw() {
     return;
   }
 
-  // GAMEPLAY
   if (gameState === "play") {
 
-    // PLAYER MOVEMENT + FOOTSTEP SOUND
     if (kb.pressing("left")) player.x -= 4;
     if (kb.pressing("right")) player.x += 4;
     if (kb.pressing("up")) player.y -= 4;
@@ -142,11 +127,9 @@ function draw() {
       footstepsSound.stop();
     }
 
-    // DIFFICULTY RAMP
     scrollSpeed += 0.002;
     scrollSpeed = min(scrollSpeed, 12);
 
-    // MOVE TREES
     for (let t of treeGroup) {
       t.y += scrollSpeed;
       if (t.y > height + 50) {
@@ -155,7 +138,6 @@ function draw() {
       }
     }
 
-    // MOVE ROCKS
     for (let r of rockGroup) {
       r.y += scrollSpeed;
       if (r.y > height + 50) {
@@ -164,25 +146,20 @@ function draw() {
       }
     }
 
-    // MOVE GOAL
     goal.y += scrollSpeed;
 
-    // COLLISION WITH OBSTACLES → WENDIGO MOVES CLOSER
     if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
       if (!biteSound.isPlaying()) biteSound.play();
       moveWendigoCloser();
     }
 
-    // WENDIGO FOLLOWS PLAYER LEFT/RIGHT
     let dx = player.x - wendigo.x;
     wendigo.x += dx * 0.05;
 
-    // WENDIGO NEVER PASSES PLAYER
     if (wendigo.y < player.y + 40) {
       wendigo.y = player.y + 40;
     }
 
-    // DISTANCE CHECK FOR SOUNDS
     let d = dist(player.x, player.y, wendigo.x, wendigo.y);
 
     if (d < 200) {
@@ -195,12 +172,10 @@ function draw() {
       if (!roarSound.isPlaying()) roarSound.play();
     }
 
-    // WENDIGO HITS PLAYER → GAME OVER
     if (d < 40) {
       gameState = "gameover";
     }
 
-    // PLAYER REACHES GOAL → WIN
     if (player.overlaps(goal)) {
       gameState = "win";
     }
@@ -208,10 +183,7 @@ function draw() {
 }
 
 function moveWendigoCloser() {
-  // Move Wendigo upward ONLY when player hits something
   wendigo.y -= 10;
-
-  // Increase how strong each future pull is
   wendigoSpeed += wendigoBoost;
 }
 
