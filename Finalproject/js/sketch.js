@@ -24,7 +24,7 @@ function preload() {
   // Sounds (correct folder!)
   biteSound = loadSound("sounds/Bite.wav");
   breathingSound = loadSound("sounds/Breathing_fast.wav");
-  footstepsSound = loadSound("sounds/Footsteps_ running.wav");
+  footstepsSound = loadSound("sounds/Footsteps_running.wav");
   roarSound = loadSound("sounds/Monster_Roar_2.wav");
 }
 
