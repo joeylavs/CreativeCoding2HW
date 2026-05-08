@@ -16,7 +16,7 @@ function setup() {
   // Player setup
   player = createSprite(width / 2, height - 100);
   player.addImage(playerImg);
-  player.scale = 1;
+  player.scale = 0.3;
 
   // Wendigo setup
   wendigo = createSprite(width / 2, 100);
