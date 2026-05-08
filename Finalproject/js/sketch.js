@@ -20,7 +20,7 @@ function preload() {
 
   biteSound = loadSound("assets/sound/Bite.wav");
   breathingSound = loadSound("assets/sound/Breathing_fast.wav");
-  footstepsSound = loadSound("assets/sound/Footsteps_running.wav"); 
+  footstepsSound = loadSound("assets/sound/Footsteps_ running.wav"); 
   roarSound = loadSound("assets/sound/Monster_Roar_2.wav");
 }
 
