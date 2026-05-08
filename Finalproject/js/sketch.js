@@ -18,6 +18,7 @@ function setup() {
   // PLAYER — start in the middle
   player = new Sprite(width / 2, height / 2);
   player.img = playerImg;
+  player.tile = false;
   player.w = 20;
   player.h = 20;
   player.collider = "none";
@@ -25,6 +26,7 @@ function setup() {
   // WENDIGO — start BELOW the screen
   wendigo = new Sprite(width / 2, height + 80);
   wendigo.img = wendigoImg;
+  wendigo.tile = false;
   wendigo.w = 28;
   wendigo.h = 28;
   wendigo.collider = "none";
@@ -37,6 +39,7 @@ function setup() {
   for (let i = 0; i < 6; i++) {
     let t = new Sprite(random(100, width - 100), random(-600, -50));
     t.img = treeImg;
+    t.tile = false;
     t.w = 40;
     t.h = 60;
     t.collider = "none";
@@ -47,6 +50,7 @@ function setup() {
   for (let i = 0; i < 6; i++) {
     let r = new Sprite(random(100, width - 100), random(-600, -50));
     r.img = rockImg;
+    r.tile = false;
     r.w = 30;
     r.h = 20;
     r.collider = "none";
