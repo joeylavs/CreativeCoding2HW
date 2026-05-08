@@ -4,6 +4,7 @@ let treeGroup, rockGroup;
 let playerImg, wendigoImg, treeImg, rockImg;
 
 let gameState = "start"; // "start", "play", "gameover"
+let scrollSpeed = 3;     // base speed
 
 function preload() {
   playerImg = loadImage("assets/player/player1.png");
@@ -31,18 +32,18 @@ function setup() {
   treeGroup = new Group();
   rockGroup = new Group();
 
-  // TREES — spawn above screen
-  for (let i = 0; i < 6; i++) {
-    let t = new Sprite(random(100, width - 100), random(-600, -50));
+  // TREES — spawn above screen (12 for difficulty)
+  for (let i = 0; i < 12; i++) {
+    let t = new Sprite(random(100, width - 100), random(-800, -50));
     t.collider = "none";
     t.img = treeImg;
     t.img.scale = 0.15;
     treeGroup.add(t);
   }
 
-  // ROCKS — spawn above screen
-  for (let i = 0; i < 6; i++) {
-    let r = new Sprite(random(100, width - 100), random(-600, -50));
+  // ROCKS — spawn above screen (12 for difficulty)
+  for (let i = 0; i < 12; i++) {
+    let r = new Sprite(random(100, width - 100), random(-800, -50));
     r.collider = "none";
     r.img = rockImg;
     r.img.scale = 0.12;
@@ -51,7 +52,8 @@ function setup() {
 }
 
 function draw() {
-  background(255); // WHITE SNOW BACKGROUND
+  // WHITE SNOW BACKGROUND
+  background(255);
 
   // START SCREEN ----------------------------------------------------
   if (gameState === "start") {
@@ -64,6 +66,7 @@ function draw() {
     text("Press SPACE to Start", width / 2, height / 2 + 20);
 
     if (kb.presses("space")) {
+      scrollSpeed = 3; // reset speed
       gameState = "play";
     }
     return;
@@ -85,21 +88,23 @@ function draw() {
 
   // GAMEPLAY --------------------------------------------------------
   if (gameState === "play") {
+
     // PLAYER MOVEMENT
     if (kb.pressing("left")) player.x -= 4;
     if (kb.pressing("right")) player.x += 4;
     if (kb.pressing("up")) player.y -= 4;
     if (kb.pressing("down")) player.y += 4;
 
-    // WORLD SCROLL SPEED
-    let scrollSpeed = 3;
+    // INCREASE DIFFICULTY OVER TIME
+    scrollSpeed += 0.002;
+    scrollSpeed = min(scrollSpeed, 12);
 
     // MOVE TREES DOWN
     for (let t of treeGroup) {
       t.y += scrollSpeed;
 
       if (t.y > height + 50) {
-        t.y = random(-600, -50);
+        t.y = random(-800, -200);
         t.x = random(100, width - 100);
       }
     }
@@ -109,7 +114,7 @@ function draw() {
       r.y += scrollSpeed;
 
       if (r.y > height + 50) {
-        r.y = random(-600, -50);
+        r.y = random(-800, -200);
         r.x = random(100, width - 100);
       }
     }
@@ -119,8 +124,9 @@ function draw() {
       moveWendigoCloser();
     }
 
-    // COLLISION WITH WENDIGO → GAME OVER
-    if (player.overlaps(wendigo)) {
+    // COLLISION WITH WENDIGO → GAME OVER (distance check)
+    let d = dist(player.x, player.y, wendigo.x, wendigo.y);
+    if (d < 40) {
       gameState = "gameover";
     }
   }
@@ -146,13 +152,14 @@ function resetGame() {
 
   // Reset obstacles
   for (let t of treeGroup) {
-    t.y = random(-600, -50);
+    t.y = random(-800, -200);
     t.x = random(100, width - 100);
   }
   for (let r of rockGroup) {
-    r.y = random(-600, -50);
+    r.y = random(-800, -200);
     r.x = random(100, width - 100);
   }
 
+  scrollSpeed = 3;
   gameState = "start";
 }
