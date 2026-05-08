@@ -1,12 +1,12 @@
 // --- GLOBAL VARIABLES ---
-let player, wendigo;
+let player, wendigo, goal;
 let treeGroup, rockGroup;
-let playerImg, wendigoImg, treeImg, rockImg;
+let playerImg, wendigoImg, treeImg, rockImg, goalImg;
 
 // Sounds
 let biteSound, breathingSound, footstepsSound, roarSound;
 
-let gameState = "start"; // "start", "play", "gameover"
+let gameState = "start"; // "start", "play", "gameover", "win"
 let scrollSpeed = 3;     // world scroll speed
 let wendigoSpeed = 0.5;  // how much closer he moves per collision
 let wendigoBoost = 0.2;  // how much stronger each collision makes him
@@ -17,6 +17,7 @@ function preload() {
   wendigoImg = loadImage("assets/enemy/wendigo1.png");
   treeImg = loadImage("assets/images/tree1.png");
   rockImg = loadImage("assets/images/rock1.png");
+  goalImg = loadImage("assets/images/tree1.png"); // placeholder goal image
 
   // Sounds
   biteSound = loadSound("assets/sound/Bite.wav");
@@ -39,6 +40,12 @@ function setup() {
   wendigo.collider = "none";
   wendigo.img = wendigoImg;
   wendigo.img.scale = 0.12;
+
+  // GOAL — the end the player can reach
+  goal = new Sprite(width / 2, -2000); // far above
+  goal.collider = "none";
+  goal.img = goalImg;
+  goal.img.scale = 0.3;
 
   // GROUPS
   treeGroup = new Group();
@@ -64,8 +71,7 @@ function setup() {
 }
 
 function draw() {
-  // WHITE SNOW BACKGROUND
-  background(255);
+  background(255); // WHITE SNOW BACKGROUND
 
   // START SCREEN ----------------------------------------------------
   if (gameState === "start") {
@@ -87,6 +93,9 @@ function draw() {
 
   // GAME OVER SCREEN ------------------------------------------------
   if (gameState === "gameover") {
+    breathingSound.stop();
+    footstepsSound.stop();
+
     textAlign(CENTER, CENTER);
     textSize(50);
     fill(0);
@@ -95,8 +104,22 @@ function draw() {
     textSize(24);
     text("Press R to Restart", width / 2, height / 2 + 40);
 
+    if (kb.presses("r")) resetGame();
+    return;
+  }
+
+  // WIN SCREEN ------------------------------------------------------
+  if (gameState === "win") {
     breathingSound.stop();
     footstepsSound.stop();
+
+    textAlign(CENTER, CENTER);
+    textSize(50);
+    fill(0);
+    text("YOU ESCAPED!", width / 2, height / 2 - 20);
+
+    textSize(24);
+    text("Press R to Restart", width / 2, height / 2 + 40);
 
     if (kb.presses("r")) resetGame();
     return;
@@ -141,6 +164,9 @@ function draw() {
       }
     }
 
+    // MOVE GOAL DOWN
+    goal.y += scrollSpeed;
+
     // COLLISION WITH OBSTACLES → WENDIGO GETS CLOSER + FASTER
     if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
       if (!biteSound.isPlaying()) biteSound.play();
@@ -171,9 +197,14 @@ function draw() {
       if (!roarSound.isPlaying()) roarSound.play();
     }
 
-    // COLLISION WITH WENDIGO → GAME OVER
+    // WENDIGO HITS PLAYER → GAME OVER
     if (d < 40) {
       gameState = "gameover";
+    }
+
+    // PLAYER REACHES GOAL → WIN
+    if (player.overlaps(goal)) {
+      gameState = "win";
     }
   }
 }
@@ -194,6 +225,9 @@ function resetGame() {
   // Reset Wendigo
   wendigo.x = width / 2;
   wendigo.y = height + 80;
+
+  // Reset goal
+  goal.y = -2000;
 
   // Reset obstacles
   for (let t of treeGroup) {
