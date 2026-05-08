@@ -3,6 +3,8 @@ let player, wendigo;
 let treeGroup, rockGroup;
 let playerImg, wendigoImg, treeImg, rockImg;
 
+let gameState = "start"; // "start", "play", "gameover"
+
 function preload() {
   playerImg = loadImage("assets/player/player1.png");
   wendigoImg = loadImage("assets/enemy/wendigo1.png");
@@ -17,13 +19,13 @@ function setup() {
   player = new Sprite(width / 2, height / 2);
   player.collider = "none";
   player.img = playerImg;
-  player.img.scale = 0.1;   // <— REAL FIX
+  player.img.scale = 0.1;
 
   // WENDIGO — start BELOW the screen
   wendigo = new Sprite(width / 2, height + 80);
   wendigo.collider = "none";
   wendigo.img = wendigoImg;
-  wendigo.img.scale = 0.12; // <— REAL FIX
+  wendigo.img.scale = 0.12;
 
   // GROUPS
   treeGroup = new Group();
@@ -34,7 +36,7 @@ function setup() {
     let t = new Sprite(random(100, width - 100), random(-600, -50));
     t.collider = "none";
     t.img = treeImg;
-    t.img.scale = 0.15;   // <— REAL FIX
+    t.img.scale = 0.15;
     treeGroup.add(t);
   }
 
@@ -43,46 +45,84 @@ function setup() {
     let r = new Sprite(random(100, width - 100), random(-600, -50));
     r.collider = "none";
     r.img = rockImg;
-    r.img.scale = 0.12;   // <— REAL FIX
+    r.img.scale = 0.12;
     rockGroup.add(r);
   }
 }
 
 function draw() {
-  background(0);
+  background(255); // WHITE SNOW BACKGROUND
 
-  // PLAYER MOVEMENT
-  if (kb.pressing("left")) player.x -= 4;
-  if (kb.pressing("right")) player.x += 4;
-  if (kb.pressing("up")) player.y -= 4;
-  if (kb.pressing("down")) player.y += 4;
+  // START SCREEN ----------------------------------------------------
+  if (gameState === "start") {
+    textAlign(CENTER, CENTER);
+    textSize(40);
+    fill(0);
+    text("WENDIGO RUN", width / 2, height / 2 - 40);
 
-  // WORLD SCROLL SPEED
-  let scrollSpeed = 3;
+    textSize(24);
+    text("Press SPACE to Start", width / 2, height / 2 + 20);
 
-  // MOVE TREES DOWN
-  for (let t of treeGroup) {
-    t.y += scrollSpeed;
-
-    if (t.y > height + 50) {
-      t.y = random(-600, -50);
-      t.x = random(100, width - 100);
+    if (kb.presses("space")) {
+      gameState = "play";
     }
+    return;
   }
 
-  // MOVE ROCKS DOWN
-  for (let r of rockGroup) {
-    r.y += scrollSpeed;
+  // GAME OVER SCREEN ------------------------------------------------
+  if (gameState === "gameover") {
+    textAlign(CENTER, CENTER);
+    textSize(50);
+    fill(0);
+    text("GAME OVER", width / 2, height / 2 - 20);
 
-    if (r.y > height + 50) {
-      r.y = random(-600, -50);
-      r.x = random(100, width - 100);
-    }
+    textSize(24);
+    text("Press R to Restart", width / 2, height / 2 + 40);
+
+    if (kb.presses("r")) resetGame();
+    return;
   }
 
-  // COLLISION CHECK
-  if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
-    moveWendigoCloser();
+  // GAMEPLAY --------------------------------------------------------
+  if (gameState === "play") {
+    // PLAYER MOVEMENT
+    if (kb.pressing("left")) player.x -= 4;
+    if (kb.pressing("right")) player.x += 4;
+    if (kb.pressing("up")) player.y -= 4;
+    if (kb.pressing("down")) player.y += 4;
+
+    // WORLD SCROLL SPEED
+    let scrollSpeed = 3;
+
+    // MOVE TREES DOWN
+    for (let t of treeGroup) {
+      t.y += scrollSpeed;
+
+      if (t.y > height + 50) {
+        t.y = random(-600, -50);
+        t.x = random(100, width - 100);
+      }
+    }
+
+    // MOVE ROCKS DOWN
+    for (let r of rockGroup) {
+      r.y += scrollSpeed;
+
+      if (r.y > height + 50) {
+        r.y = random(-600, -50);
+        r.x = random(100, width - 100);
+      }
+    }
+
+    // COLLISION WITH OBSTACLES → WENDIGO MOVES CLOSER
+    if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
+      moveWendigoCloser();
+    }
+
+    // COLLISION WITH WENDIGO → GAME OVER
+    if (player.overlaps(wendigo)) {
+      gameState = "gameover";
+    }
   }
 }
 
@@ -93,4 +133,26 @@ function moveWendigoCloser() {
 
   wendigo.x += dx * step;
   wendigo.y += dy * step;
+}
+
+function resetGame() {
+  // Reset player
+  player.x = width / 2;
+  player.y = height / 2;
+
+  // Reset Wendigo
+  wendigo.x = width / 2;
+  wendigo.y = height + 80;
+
+  // Reset obstacles
+  for (let t of treeGroup) {
+    t.y = random(-600, -50);
+    t.x = random(100, width - 100);
+  }
+  for (let r of rockGroup) {
+    r.y = random(-600, -50);
+    r.x = random(100, width - 100);
+  }
+
+  gameState = "start";
 }
