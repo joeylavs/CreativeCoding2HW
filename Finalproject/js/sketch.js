@@ -16,13 +16,13 @@ function setup() {
   // Player
   player = new Sprite(width / 2, height - 100);
   player.img = playerImg;
-  player.scale = 0.3;
+  player.scale = 0.15;
   player.collider = "none"; // no physics body
 
   // Wendigo
   wendigo = new Sprite(width / 2, 100);
   wendigo.img = wendigoImg;
-  wendigo.scale = 0.3;
+  wendigo.scale = 0.2;
   wendigo.collider = "none";
 
   // Groups
@@ -33,7 +33,7 @@ function setup() {
   for (let i = 0; i < 5; i++) {
     let t = new Sprite(random(100, width - 100), random(150, height - 200));
     t.img = treeImg;
-    t.scale = 1;
+    t.scale = .4;
     t.collider = "static";
     treeGroup.add(t);
   }
@@ -42,7 +42,7 @@ function setup() {
   for (let i = 0; i < 5; i++) {
     let r = new Sprite(random(100, width - 100), random(150, height - 200));
     r.img = rockImg;
-    r.scale = 1;
+    r.scale = .4;
     r.collider = "static";
     rockGroup.add(r);
   }
