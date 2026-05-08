@@ -18,10 +18,10 @@ function preload() {
   rockImg = loadImage("assets/images/rock1.png");
   goalImg = loadImage("assets/images/tree1.png");
 
-  biteSound = loadSound("assets/sounds/Bite.wav");
-  breathingSound = loadSound("assets/sounds/Breathing_fast.wav");
-  footstepsSound = loadSound("assets/sounds/Footsteps_running.wav"); 
-  roarSound = loadSound("assets/sounds/Monster_Roar_2.wav");
+  biteSound = loadSound("assets/sound/Bite.wav");
+  breathingSound = loadSound("assets/sound/Breathing_fast.wav");
+  footstepsSound = loadSound("assets/sound/Footsteps_running.wav"); 
+  roarSound = loadSound("assets/sound/Monster_Roar_2.wav");
 }
 
 function setup() {
