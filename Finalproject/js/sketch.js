@@ -3,16 +3,26 @@ let player, wendigo;
 let treeGroup, rockGroup;
 let playerImg, wendigoImg, treeImg, rockImg;
 
-let gameState = "start"; 
+// Sounds
+let biteSound, breathingSound, footstepsSound, roarSound;
+
+let gameState = "start"; // "start", "play", "gameover"
 let scrollSpeed = 3;     // world scroll speed
 let wendigoSpeed = 0.5;  // vertical chase speed
 let wendigoBoost = 0.2;  // speed gained per collision
 
 function preload() {
+  // Images
   playerImg = loadImage("assets/player/player1.png");
   wendigoImg = loadImage("assets/enemy/wendigo1.png");
   treeImg = loadImage("assets/images/tree1.png");
   rockImg = loadImage("assets/images/rock1.png");
+
+  // Sounds
+  biteSound = loadSound("assets/sound/Bite.wav");
+  breathingSound = loadSound("assets/sound/Breathing_fast.wav");
+  footstepsSound = loadSound("assets/sound/Footsteps_ running.wav");
+  roarSound = loadSound("assets/sound/Monster_Roar_2.wav");
 }
 
 function setup() {
@@ -57,7 +67,7 @@ function draw() {
   // WHITE SNOW BACKGROUND
   background(255);
 
-  // START SCREEN 
+  // START SCREEN ----------------------------------------------------
   if (gameState === "start") {
     textAlign(CENTER, CENTER);
     textSize(40);
@@ -75,7 +85,7 @@ function draw() {
     return;
   }
 
-  // GAME OVER SCREEN 
+  // GAME OVER SCREEN ------------------------------------------------
   if (gameState === "gameover") {
     textAlign(CENTER, CENTER);
     textSize(50);
@@ -85,18 +95,28 @@ function draw() {
     textSize(24);
     text("Press R to Restart", width / 2, height / 2 + 40);
 
+    // Stop all sounds
+    breathingSound.stop();
+    footstepsSound.stop();
+
     if (kb.presses("r")) resetGame();
     return;
   }
 
-  // GAMEPLAY 
+  // GAMEPLAY --------------------------------------------------------
   if (gameState === "play") {
 
-    // PLAYER MOVEMENT
+    // PLAYER MOVEMENT + FOOTSTEP SOUND
     if (kb.pressing("left")) player.x -= 4;
     if (kb.pressing("right")) player.x += 4;
     if (kb.pressing("up")) player.y -= 4;
     if (kb.pressing("down")) player.y += 4;
+
+    if (kb.pressing("left") || kb.pressing("right") || kb.pressing("up") || kb.pressing("down")) {
+      if (!footstepsSound.isPlaying()) footstepsSound.loop();
+    } else {
+      footstepsSound.stop();
+    }
 
     // INCREASE DIFFICULTY OVER TIME
     scrollSpeed += 0.002;
@@ -122,8 +142,9 @@ function draw() {
       }
     }
 
-    // COLLISION WITH OBSTACLES → WENDIGO GETS CLOSER + FASTER
+    // COLLISION WITH OBSTACLES → WENDIGO GETS CLOSER + FASTER + SOUND
     if (player.overlaps(treeGroup) || player.overlaps(rockGroup)) {
+      if (!biteSound.isPlaying()) biteSound.play();
       moveWendigoCloser();
     }
 
@@ -134,8 +155,27 @@ function draw() {
     // WENDIGO MOVES UPWARD TOWARD PLAYER
     wendigo.y -= wendigoSpeed;
 
-    // COLLISION WITH WENDIGO → GAME OVER
+    // PREVENT WENDIGO FROM PASSING THE PLAYER
+    if (wendigo.y < player.y + 40) {
+      wendigo.y = player.y + 40;
+    }
+
+    // DISTANCE CHECK FOR SOUNDS
     let d = dist(player.x, player.y, wendigo.x, wendigo.y);
+
+    // Breathing when close
+    if (d < 200) {
+      if (!breathingSound.isPlaying()) breathingSound.loop();
+    } else {
+      breathingSound.stop();
+    }
+
+    // Roar when VERY close
+    if (d < 80) {
+      if (!roarSound.isPlaying()) roarSound.play();
+    }
+
+    // COLLISION WITH WENDIGO → GAME OVER
     if (d < 40) {
       gameState = "gameover";
     }
@@ -169,8 +209,15 @@ function resetGame() {
     r.x = random(100, width - 100);
   }
 
+  // Reset speeds
   scrollSpeed = 3;
   wendigoSpeed = 0.5;
+
+  // Stop all sounds
+  biteSound.stop();
+  breathingSound.stop();
+  footstepsSound.stop();
+  roarSound.stop();
 
   gameState = "start";
 }
